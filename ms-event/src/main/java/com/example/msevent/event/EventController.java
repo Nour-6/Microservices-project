@@ -2,6 +2,7 @@ package com.example.msevent.event;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -10,6 +11,7 @@ import java.util.List;
 @RequestMapping("/events")
 @Slf4j
 @RequiredArgsConstructor
+@RefreshScope
 public class EventController {
     private final IEventService eventService;
 
