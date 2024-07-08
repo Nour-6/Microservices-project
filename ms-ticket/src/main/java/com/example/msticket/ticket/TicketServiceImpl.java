@@ -2,7 +2,11 @@ package com.example.msticket.ticket;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -14,6 +18,8 @@ public class TicketServiceImpl implements ITicketService {
     private TicketRepository ticketRepository;
     private EventClient eventClient;
     private final TicketMapper ticketMapper;
+    private RestTemplate restTemplate;
+    private static final String EVENT_SERVICE_URL = "http://localhost:8081/events/";
 
     public TicketDTO getTicketById(Long id) {
         return ticketRepository.findById(id).map(ticket -> {
@@ -32,7 +38,13 @@ public class TicketServiceImpl implements ITicketService {
     public List<TicketDTO> findAllTickets() {
         return ticketRepository.findAll().stream()
                 .map(ticket -> {
-                    EventDTO eventDTO = eventClient.getEventById(ticket.getEventId());
+                    ResponseEntity<EventDTO> response = restTemplate.exchange(
+                            EVENT_SERVICE_URL + ticket.getEventId(),
+                            HttpMethod.GET,
+                            HttpEntity.EMPTY,
+                            EventDTO.class
+                    );
+                    EventDTO eventDTO = response.getBody();
                     TicketDTO ticketDTO = ticketMapper.toDto(ticket);
                     return new TicketDTO(ticketDTO.ticketId(), ticketDTO.price(), ticketDTO.eventId(), eventDTO);
                 })
