@@ -1,10 +1,14 @@
 package com.example.msticket.ticket;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -19,7 +23,16 @@ public class TicketServiceImpl implements ITicketService {
     private EventClient eventClient;
     private final TicketMapper ticketMapper;
     private RestTemplate restTemplate;
+    private ObjectMapper objectMapper;
     private static final String EVENT_SERVICE_URL = "http://localhost:8081/events/";
+    private KafkaTemplate<String, String> kafkaTemplate;
+    private static final String TOPIC = "ticket-topic";
+
+    public void sendTicket(EventDTO eventDTO) throws JsonProcessingException {
+        String eventAsMessage = objectMapper.writeValueAsString(eventDTO);
+        kafkaTemplate.send(TOPIC, eventAsMessage);
+        log.info("Produced event: {}{}{}", eventDTO.eventId(), eventDTO.eventDate(), eventDTO.eventPlace());
+    }
 
     public TicketDTO getTicketById(Long id) {
         return ticketRepository.findById(id).map(ticket -> {

@@ -1,5 +1,6 @@
 package com.example.msticket;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
@@ -19,6 +20,11 @@ public class MsTicketApplication {
 	@Bean
 	public RestTemplate restTemplate(){
 		return new RestTemplate();
+	}
+
+	@Bean
+	public ObjectMapper objectMapper(){
+		return new ObjectMapper();
 	}
 
 }
