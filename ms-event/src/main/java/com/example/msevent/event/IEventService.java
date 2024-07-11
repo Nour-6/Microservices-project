@@ -1,5 +1,6 @@
 package com.example.msevent.event;
 
+
 import java.util.List;
 
 public interface IEventService {
@@ -7,5 +8,6 @@ public interface IEventService {
     EventDTO getEventById(String eventId);
     EventDTO saveEvent(EventDTO eventDTO);
     void deleteEventById(String eventId);
+    void sendEvent(String eventId);
 }
 

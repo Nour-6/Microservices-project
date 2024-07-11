@@ -11,6 +11,7 @@ public interface EventClient {
     @GetMapping("/events/{id}")
     @CircuitBreaker(name="msEvent",fallbackMethod ="fallbackGetEventById")
     EventDTO getEventById(@PathVariable("id") String id);
+
     default EventDTO fallbackGetEventById(String id, Throwable throwable) {
         return new EventDTO("0", "Fallback event", "0");
     }

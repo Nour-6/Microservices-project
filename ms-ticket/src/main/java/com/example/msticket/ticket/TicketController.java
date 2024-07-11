@@ -1,6 +1,5 @@
 package com.example.msticket.ticket;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
@@ -25,11 +24,7 @@ public class TicketController {
     public TicketDTO getTicketById(@PathVariable("id") Long id) {return ticketService.getTicketById(id);}
 
     @PostMapping
-    public TicketDTO createTicket(@RequestBody TicketDTO ticketDTO) throws JsonProcessingException {
-        ticketService.saveTicket(ticketDTO);
-        ticketService.sendTicket(ticketDTO.eventDTO());
-        return ticketDTO;
-    }
+    public TicketDTO createTicket(@RequestBody TicketDTO ticketDTO) {return ticketService.saveTicket(ticketDTO);}
 
     @PutMapping("/{id}")
     public TicketDTO updateTicket(@PathVariable Long id, @RequestBody TicketDTO ticketDTO) {return ticketService.saveTicket(ticketDTO);}

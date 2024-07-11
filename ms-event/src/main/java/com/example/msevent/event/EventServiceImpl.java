@@ -1,12 +1,9 @@
 package com.example.msevent.event;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -15,7 +12,8 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class EventServiceImpl implements IEventService {
     private EventRepository repository;
-    private ObjectMapper objectMapper;
+    private KafkaTemplate<String, String> kafkaTemplate;
+    private static final String TOPIC = "event-topic";
 
     public List<EventDTO> findAllEvents() {
         return repository.findAll().stream()
@@ -38,11 +36,9 @@ public class EventServiceImpl implements IEventService {
         repository.deleteById(eventId);
     }
 
-    @KafkaListener(topics = "ticket-topic", groupId = "group_id")
-    public void consumeArticle(String message) throws JsonProcessingException {
-        EventDTO eventDTO = objectMapper.readValue(message, EventDTO.class);
-        saveEvent(eventDTO);
-        log.info("Consumed event: {}{}{}", eventDTO.eventId(), eventDTO.eventDate(), eventDTO.eventPlace());
+    public void sendEvent(String eventId) {
+        kafkaTemplate.send(TOPIC, eventId);
+        log.info("Produced event: {}", eventId);
     }
 }
 

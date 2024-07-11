@@ -1,4 +1,4 @@
-package com.example.msevent.event;
+package com.example.msticket.ticket;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
