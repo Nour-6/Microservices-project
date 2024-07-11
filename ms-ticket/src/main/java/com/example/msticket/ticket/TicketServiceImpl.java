@@ -20,7 +20,7 @@ public class TicketServiceImpl implements ITicketService {
     private EventClient eventClient;
     private final TicketMapper ticketMapper;
     private RestTemplate restTemplate;
-    private static final String EVENT_SERVICE_URL = "http://localhost:8081/events/";
+    private static final String EVENT_SERVICE_URL = "http://MS-EVENT/events/";
 
     public TicketDTO getTicketById(Long id) {
         return ticketRepository.findById(id).map(ticket -> {

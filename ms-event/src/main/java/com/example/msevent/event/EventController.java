@@ -22,6 +22,7 @@ public class EventController {
 
     @GetMapping("/{id}")
     public EventDTO getEventById(@PathVariable String id) {
+        log.info("this event is solicited now");
         return eventService.getEventById(id);
     }
 
