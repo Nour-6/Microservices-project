@@ -3,9 +3,12 @@ package com.example.msticket.ticket;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -23,11 +26,17 @@ public class TicketServiceImpl implements ITicketService {
     private static final String EVENT_SERVICE_URL = "http://MS-EVENT/events/";
 
     public TicketDTO getTicketById(Long id) {
+        Jwt jwt = (Jwt) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String token = jwt.getTokenValue();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(token);
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+
         return ticketRepository.findById(id).map(ticket -> {
             ResponseEntity<EventDTO> response = restTemplate.exchange(
                     EVENT_SERVICE_URL + ticket.getEventId(),
                     HttpMethod.GET,
-                    HttpEntity.EMPTY,
+                    entity,
                     EventDTO.class
             );
             EventDTO eventDTO = response.getBody();
@@ -47,12 +56,17 @@ public class TicketServiceImpl implements ITicketService {
     }
 
     public List<TicketDTO> findAllTickets() {
+        Jwt jwt = (Jwt) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String token = jwt.getTokenValue();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(token);
+        HttpEntity<String> entity = new HttpEntity<>(headers);
         return ticketRepository.findAll().stream()
                 .map(ticket -> {
                     ResponseEntity<EventDTO> response = restTemplate.exchange(
                             EVENT_SERVICE_URL + ticket.getEventId(),
                             HttpMethod.GET,
-                            HttpEntity.EMPTY,
+                            entity,
                             EventDTO.class
                     );
                     EventDTO eventDTO = response.getBody();
