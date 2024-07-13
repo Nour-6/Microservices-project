@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 public class TicketServiceImpl implements ITicketService {
     private TicketRepository ticketRepository;
     private EventClient eventClient;
-    private final TicketMapper ticketMapper;
+    private TicketMapper ticketMapper;
     private RestTemplate restTemplate;
     private static final String EVENT_SERVICE_URL = "http://MS-EVENT/events/";
 
