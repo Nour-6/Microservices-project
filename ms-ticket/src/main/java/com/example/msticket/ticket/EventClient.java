@@ -5,7 +5,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
-@FeignClient("MS-EVENT")
+@FeignClient(name = "MS-EVENT", configuration = FeignConfig.class)
 public interface EventClient {
 
     @GetMapping("/events/{id}")
