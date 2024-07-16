@@ -1,0 +1,9 @@
+FROM eclipse-temurin:17-jdk-alpine
+
+WORKDIR /config-server
+
+EXPOSE 8888
+
+ADD target/*.jar config-server-0.0.1-SNAPSHOT.jar
+
+ENTRYPOINT ["java", "-jar", "config-server-0.0.1-SNAPSHOT.jar"]

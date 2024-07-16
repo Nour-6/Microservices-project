@@ -56,21 +56,10 @@ public class TicketServiceImpl implements ITicketService {
     }
 
     public List<TicketDTO> findAllTickets() {
-        Jwt jwt = (Jwt) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String token = jwt.getTokenValue();
-        HttpHeaders headers = new HttpHeaders();
-        headers.setBearerAuth(token);
-        HttpEntity<String> entity = new HttpEntity<>(headers);
         return ticketRepository.findAll().stream()
                 .map(ticket -> {
-                    ResponseEntity<EventDTO> response = restTemplate.exchange(
-                            EVENT_SERVICE_URL + ticket.getEventId(),
-                            HttpMethod.GET,
-                            entity,
-                            EventDTO.class
-                    );
-                    EventDTO eventDTO = response.getBody();
                     TicketDTO ticketDTO = ticketMapper.toDto(ticket);
+                    EventDTO eventDTO = eventClient.getEventById(ticketDTO.eventId());
                     return new TicketDTO(ticketDTO.ticketId(), ticketDTO.price(), ticketDTO.eventId(), eventDTO);
                 })
                 .collect(Collectors.toList());

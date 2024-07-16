@@ -1,0 +1,9 @@
+FROM eclipse-temurin:17-jdk-alpine
+
+WORKDIR /discovery-service
+
+EXPOSE 8761
+
+ADD target/*.jar discovery-service-0.0.1-SNAPSHOT.jar
+
+ENTRYPOINT ["java", "-jar", "discovery-service-0.0.1-SNAPSHOT.jar"]

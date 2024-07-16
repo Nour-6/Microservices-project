@@ -34,6 +34,7 @@ public class EventServiceImpl implements IEventService {
 
     public void deleteEventById(String eventId) {
         repository.deleteById(eventId);
+        sendEvent(eventId);
     }
 
     public void sendEvent(String eventId) {
